@@ -1,14 +1,26 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 
-const todos = ref([]);
+enum CATEGORIES {
+  Business,
+  Personal
+}
+
+type todo = {
+  content: string,
+  category: CATEGORIES,
+  done: boolean,
+  createdAt: number
+}
+
+const todos = ref<todo[]>([]);
 const name = ref('');
 
 const input_content = ref('');
 const input_category = ref(null);
 
 const todos_asc = computed(() =>
-  todos.value.sort((a, b) => b.createdAt - a.createdAt)
+  todos.value.sort((a: todo, b: todo) => b.createdAt - a.createdAt)
 );
 
 const addTodo = () => {
@@ -25,7 +37,7 @@ const addTodo = () => {
   input_category.value = null;
 };
 
-const removeTodo = (todo) => {
+const removeTodo = (todo: todo) => {
   todos.value = todos.value.filter((t) => t !== todo);
 };
 
@@ -43,7 +55,7 @@ watch(
 
 onMounted(() => {
   name.value = localStorage.getItem('name') || '';
-  todos.value = JSON.parse(localStorage.getItem('todos')) || [];
+  todos.value = JSON.parse(localStorage.getItem('todos') as string) || [];
 });
 </script>
 
