@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
-
+import TodoList from './components/TodoList.vue';
 enum CATEGORIES {
   Business,
   Personal
@@ -19,9 +19,7 @@ const name = ref('');
 const input_content = ref('');
 const input_category = ref(null);
 
-const todos_asc = computed(() =>
-  todos.value.sort((a: todo, b: todo) => b.createdAt - a.createdAt)
-);
+
 
 const addTodo = () => {
   if (input_content.value.trim() === '' || input_category.value == null) return;
@@ -38,6 +36,7 @@ const addTodo = () => {
 };
 
 const removeTodo = (todo: todo) => {
+  console.log(todo)
   todos.value = todos.value.filter((t) => t !== todo);
 };
 
@@ -103,25 +102,10 @@ onMounted(() => {
         <input type="submit" value="Add todo" />
       </form>
     </section>
-    <section class="todo-list">
-      <h3>TODO LIST</h3>
-
-      <div
-        v-for="todo in todos_asc"
-        :class="`todo-item ${todo.done && 'done'}`"
-      >
-        <label>
-          <input type="checkbox" v-model="todo.done" />
-          <span :class="`bubble ${todo.category}`"></span>
-        </label>
-        <div class="todo-content">
-          <input type="text" v-model="todo.content" />
-        </div>
-        <div class="actions">
-          <button class="delete" @click="removeTodo(todo)">Delete</button>
-        </div>
-      </div>
-    </section>
+    <TodoList
+      :todos="todos"
+      @removeTodo="removeTodo"
+    />
   </main>
 </template>
 
